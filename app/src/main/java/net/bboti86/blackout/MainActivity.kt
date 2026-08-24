@@ -25,6 +25,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -82,6 +83,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -443,14 +445,14 @@ fun TimeColumn(
     onValueChange: (Int) -> Unit
 ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        IconButton(onClick = {
+        RepeatingIconButton(onClick = {
             val next = if (value + 1 > range.last) range.first else value + 1
             onValueChange(next)
         }) {
             Icon(Icons.Default.Add, contentDescription = "Increase $label")
         }
         Text(String.format(Locale.getDefault(), "%02d", value), fontSize = 24.sp, fontWeight = FontWeight.Bold)
-        IconButton(onClick = {
+        RepeatingIconButton(onClick = {
             val prev = if (value - 1 < range.first) range.last else value - 1
             onValueChange(prev)
         }) {
@@ -458,6 +460,32 @@ fun TimeColumn(
         }
         Text(label, fontSize = 10.sp, color = Color.Gray)
     }
+}
+
+@Composable
+fun RepeatingIconButton(
+    onClick: () -> Unit,
+    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
+    content: @Composable () -> Unit
+) {
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            onClick() // First click immediate
+            delay(500.milliseconds) // Initial wait
+            while (isPressed) {
+                onClick()
+                delay(100.milliseconds) // Repeat speed
+            }
+        }
+    }
+
+    IconButton(
+        onClick = {}, // Logic handled by isPressed LaunchedEffect
+        interactionSource = interactionSource,
+        content = content
+    )
 }
 
 // Helper function to format system time (e.g. 14:05)

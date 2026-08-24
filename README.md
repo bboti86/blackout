@@ -6,7 +6,7 @@ A minimalist, OLED-friendly clock and battery monitor app designed for Android d
 
 - **Pure OLED Black:** The background is `#000000` to minimize power consumption and prevent burn-in on OLED screens.
 - **Minimalist UI:** Shows the current time and battery percentage in a clean, high-contrast design.
-- **Settings Menu:** Accessible via a gear icon when the UI is visible.
+- **Settings Menu:** Accessible via a gear icon when the UI is visible. Includes a custom, fast-scrolling time picker.
 - **Custom Triggers:**
     - **Battery Threshold:** Automatically show the UI when battery falls below a set percentage.
     - **Time Trigger:** Automatically show the UI at a specific time (stays active for 1 hour).

@@ -60,6 +60,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -469,13 +470,14 @@ fun RepeatingIconButton(
     content: @Composable () -> Unit
 ) {
     val isPressed by interactionSource.collectIsPressedAsState()
+    val currentOnClick by rememberUpdatedState(onClick)
 
     LaunchedEffect(isPressed) {
         if (isPressed) {
-            onClick() // First click immediate
+            currentOnClick() // First click immediate
             delay(500.milliseconds) // Initial wait
             while (isPressed) {
-                onClick()
+                currentOnClick()
                 delay(100.milliseconds) // Repeat speed
             }
         }
